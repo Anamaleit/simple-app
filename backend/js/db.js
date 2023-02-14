@@ -17,7 +17,6 @@ module.exports = (rel,lib)=>class {
 		// Create and store all Models.
 		const config = require(rel('/backend/js/config.js'));
 		config.mongodbSpecification.forEach(entry=>{
-			console.log(entry);
 			this.models[entry.collectionName] = this.createModel(entry.collectionName,rel(entry.schemaPath));
 		});
 		
@@ -42,16 +41,16 @@ module.exports = (rel,lib)=>class {
 	
 	//
 	async generateAuthToken(email,duration=365*24*60*60){
-		const user = await this.readOne('User',{email});if (user === undefined){return undefined;}
+		const user = await this.readOne('Users',{email});if (user === undefined){return undefined;}
 		const entry = {
 			token      : crypto.randomBytes(32).toString('base64'),
 			expiration : lib.now() + duration,};
 		user.authTokens.push(entry);
 		if (await this.update(user) === undefined){return undefined;}
-		return token;
+		return entry.token;
 	}
 	async verifyAuthToken(email,token){
-		const user = await this.readOne('User',{email});if (user === undefined){return undefined;}
+		const user = await this.readOne('Users',{email});if (user === undefined){return undefined;}
 		// Remove old tokens for housekeeping.
 		const now = lib.now();
 		user.authTokens = user.authTokens.filter(entry=>now < entry.expiration);
@@ -86,6 +85,9 @@ module.exports = (rel,lib)=>class {
 			lib.error(error);
 			return undefined;
 		}
+		if (items === null){
+			return [];
+		}
 		return items;}
 	
 	async readMultiple(collectionName,match={},sort={}){
@@ -102,6 +104,9 @@ module.exports = (rel,lib)=>class {
 			lib.error(error);
 			return undefined;
 		}
+		if (items === null){
+			return [];
+		}
 		return items;
 	}
 	
@@ -116,7 +121,10 @@ module.exports = (rel,lib)=>class {
 			item = await model.findOne(match);
 		}
 		catch (error){
-			this.lib.error(error);
+			lib.error(error);
+			return undefined;
+		}
+		if (item === null){
 			return undefined;
 		}
 		return item;
@@ -129,6 +137,10 @@ module.exports = (rel,lib)=>class {
 			item = await model.findOne(match);
 		}
 		catch (error){
+			lib.error(error);
+			return undefined;
+		}
+		if (item === null){
 			return false;
 		}
 		return true;

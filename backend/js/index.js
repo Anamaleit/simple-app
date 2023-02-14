@@ -1,9 +1,10 @@
 module.exports = async function(projectRootPath){
 	
 	// Includes.
-	const express  = require('express' );
-	const mongoose = require('mongoose');
-	const path     = require('path'    );
+	const express  = require('express'  );
+	const mongoose = require('mongoose' );
+	const path     = require('path'     );
+	const cliColor = require('cli-color');
 	
 	// Local includes.
 	const rel = (pathFromProjectRoot)=>path.join(projectRootPath,pathFromProjectRoot);
@@ -11,7 +12,7 @@ module.exports = async function(projectRootPath){
 	const lib    = require(rel('/backend/js/lib.js'));
 	const Db     = require(rel('/backend/js/db.js'))(rel,lib);
 	const db = new Db();
-	db.init();
+	await db.init();
 	
 	// Express routes.
 	const app = express();
@@ -39,7 +40,7 @@ module.exports = async function(projectRootPath){
 	}
 	{
 		app.post('/api/test',async ()=>{
-			const o = await db.readOne('Students',{name:'test'});
+			const o = await db.readMultiple('Students',{name:'testzzz'});
 			console.log(o);
 		});
 	}
@@ -55,7 +56,7 @@ module.exports = async function(projectRootPath){
 	app.use('/js'       ,express.static(rel('/frontend/js')));
 	app.use('/page'     ,express.static(rel('/frontend-transpiled/page')));
 	// Listen for clients.
-	app.listen(config.port,()=>{
-		console.log(`App is listening on port ${config.port}.`)
+	app.listen(config.port,config.ip,()=>{
+		console.log(cliColor.green(`Server is up. Visit ${config.ip}:${config.port}.`))
 	});
 };

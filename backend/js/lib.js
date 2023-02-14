@@ -1,6 +1,7 @@
-const bcrypt   = require('bcrypt'  );
-const mongoose = require('mongoose');
-const crypto   = require('crypto'  );
+const bcrypt   = require('bcrypt'   );
+const mongoose = require('mongoose' );
+const crypto   = require('crypto'   );
+const cliColor = require('cli-color');
 module.exports = {
 	
 	//
@@ -8,7 +9,18 @@ module.exports = {
 	
 	//
 	error : function(internalErrorDetails){
-		console.trace(`[Error] : ${internalErrorDetails}\n`);
+		if (typeof internalErrorDetails === "string"){
+			console.log('');
+			console.log(cliColor.red('[Error] : (see below)'));
+			console.trace(internalErrorDetails);
+			console.log('');
+		}
+		else{
+			console.log('');
+			console.log(cliColor.red('[Error] : (see below)'));
+			console.log(internalErrorDetails);
+			console.log('');
+		}
 	},
 	objectIsEmpty : function(object){
 		return Object.keys(object).length === 0;

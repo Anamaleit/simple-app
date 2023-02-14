@@ -1,5 +1,6 @@
 module.exports = {
 	// Configuration.
+	ip : '192.81.134.169',
 	port : 5000,
 	globalStyleDependencies : [],
 	globalComponentDependencies : [
@@ -46,6 +47,13 @@ module.exports = {
 			singularName            : 'Student',
 			apiBaseRoute            : '/api/student/',
 			schemaPath              : '/backend/mongodb/schema/Students.js',
+			apiHandlerGeneratorPath : '/backend/api/generic.js',
+		},
+		{
+			collectionName          : 'Users',
+			singularName            : 'User',
+			apiBaseRoute            : '/api/user/',
+			schemaPath              : '/backend/mongodb/schema/Users.js',
 			apiHandlerGeneratorPath : '/backend/api/generic.js',
 		},
 	],

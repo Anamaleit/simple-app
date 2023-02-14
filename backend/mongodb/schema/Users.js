@@ -10,7 +10,12 @@ module.exports = {
 	},
 	authTokens : [
 		{
-			type : String,
+			token : {
+				type : String,
+			},
+			expiration : {
+				type : Number,
+			},
 		},
 	],
 	isTeacher : {
