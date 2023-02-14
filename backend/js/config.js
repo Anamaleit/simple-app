@@ -1,6 +1,7 @@
 module.exports = {
 	// Configuration.
 	port : 5000,
+	globalStyleDependencies : [],
 	globalComponentDependencies : [
 		'/component/Navbar.js',
 	],
@@ -33,6 +34,9 @@ module.exports = {
 			urlPath       : '/raw-api',
 			pageTitle     : 'Raw API',
 			rootComponent : 'RawApi',
+			styleDependencies : [
+				'/css/RawApi.css',
+			],
 			componentDependencies : [],
 		},
 	],

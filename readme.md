@@ -8,5 +8,7 @@
 ## How things were installed:
 	npm install --save express
 	npm install --save mongoose
+	npm install --save validator
+	npm install --save bcrypt
 	npm install --save-dev @babel/core @babel/cli @babel/node @babel/preset-react
 	npm install --save-dev nodemon

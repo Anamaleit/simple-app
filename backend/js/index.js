@@ -9,29 +9,44 @@ module.exports = async function(projectRootPath){
 	const rel = (pathFromProjectRoot)=>path.join(projectRootPath,pathFromProjectRoot);
 	const config = require(rel('/backend/js/config.js'));
 	const lib    = require(rel('/backend/js/lib.js'));
+	const Db     = require(rel('/backend/js/db.js'))(rel,lib);
+	const db = new Db();
+	db.init();
 	
 	// Express routes.
 	const app = express();
 	app.use(express.json());
 	// Interpret database config.
-	config.mongodbSpecification.forEach(entry=>{
-		const model = lib.createModel(entry.collectionName,rel(entry.schemaPath));
+	/*config.mongodbSpecification.forEach(entry=>{
+		const model = db.createModel(entry.collectionName,rel(entry.schemaPath));
 		const apiHandlerGenerator = require(rel(entry.apiHandlerGeneratorPath));
 		const apiHandler = apiHandlerGenerator(model,entry.singularName);
 		//const requireAuth = require('../middleware/requireAuth')
 		//router.use(requireAuth);
 		const router = express.Router();
-		router.get   ('/'   ,apiHandler.getAll); // GET
-		router.get   ('/:id',apiHandler.getOne); // GET
-		router.patch ('/:id',apiHandler.update); // PATCH
-		router.post  ('/'   ,apiHandler.create); // POST
-		router.delete('/:id',apiHandler.delete); // DELETE
+		router.get   ('/'   ,apiHandler.getAll);
+		router.get   ('/:id',apiHandler.getOne);
+		router.patch ('/:id',apiHandler.update);
+		router.post  ('/'   ,apiHandler.create);
+		router.delete('/:id',apiHandler.delete);
 		app.use(entry.apiBaseRoute,router);
-	});
+	});*/
+	{
+		const apiAuthHandlerGenerator = require(rel('/backend/api/auth.js'));
+		const apiAuthHandler = apiAuthHandlerGenerator(lib,db);
+		app.post('/api/auth/sign-up',(function(){return function(req,res){lib.wrapExceptionableFunction(req,res,apiAuthHandler.signUp);};})());
+		app.post('/api/auth/sign-in',apiAuthHandler.signIn);
+	}
+	{
+		app.post('/api/test',async ()=>{
+			const o = await db.readOne('Students',{name:'test'});
+			console.log(o);
+		});
+	}
 	// Hook up custom page routes.
 	config.pageRoutes.forEach(route=>{
 		app.get(route.urlPath,function(req,res){
-			res.send(lib.generateBaseHtml(route,config.globalComponentDependencies));
+			res.send(lib.generateBaseHtml(route,config.globalStyleDependencies,config.globalComponentDependencies));
 		});
 	});
 	// Hook up the rest of the raw routes.
@@ -43,9 +58,4 @@ module.exports = async function(projectRootPath){
 	app.listen(config.port,()=>{
 		console.log(`App is listening on port ${config.port}.`)
 	});
-	
-	// Mongodb.
-	const secret = require(rel('/secret/secret.js'));
-	mongoose.set('strictQuery',false); // Suppress warning for incoming mongoose 7 change.
-	await mongoose.connect(secret.mongodbAddress,{dbName:'simple-app'});
 };

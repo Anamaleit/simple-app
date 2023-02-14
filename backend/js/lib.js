@@ -7,61 +7,56 @@ module.exports = {
 	now : ()=>Date.now()/1000,
 	
 	//
-	authTokenEntries : {},
-	schema.statics.signup = async function(email, password) {
-		if (!validator.isEmail(email)) {
-			throw Error('Email is not valid')
-		}
-		if (!validator.isStrongPassword(password)) {
-			throw Error('Password not strong enough')
-		}
-		const exists = await this.findOne({ email })
-		if (exists) {
-			throw Error('Email already used')
-		}
-		const salt = await bcrypt.genSalt(10)
-		const hash = await bcrypt.hash(password, salt)
-		const user = await this.create({email,hash})
-		return user
-	}
-	validateUserCredentials : function(User,email,password){
-		const user = await User.findOne({email});
-		const match = await bcrypt.compare(password,user.hash);
-		return match;
+	error : function(internalErrorDetails){
+		console.trace(`[Error] : ${internalErrorDetails}\n`);
 	},
-	generateAuthToken : function(email,password,duration){
-		const token = crypto.randomBytes(64).toString('base64');
-		const expiration = this.now() + duration;
-		const entry = {email,token,expiration};
-		this.authTokenEntries.push(entry);
-		return token;
-	},
-	removeExpiredAuthTokens : function(){
-		const now = this.now();
-		this.authTokenEntries = this.authTokenEntries.filter(entry=>now < entry.expiration);
-	},
-	verifyAuthToken : function(email,token){
-		this.removeExpiredAuthTokens();
-		return this.authTokenEntries.some(entry=>entry.email === email && entry.token === token);
+	objectIsEmpty : function(object){
+		return Object.keys(object).length === 0;
 	},
 	
-	// Create and return a Mongoose Model.
-	createModel : function(collectionName,schemaAbsolutePath){
-		// strict:throw makes it so that telltale warning signs are reported instead of silently being ignored.
-		const schema = new mongoose.Schema(require(schemaAbsolutePath),{strict:"throw",timestamps:true});
-		const model = mongoose.model(collectionName,schema);
-		return model;
+	// !!! HERE - use this for each endpoint
+	wrapExceptionableFunction : async function(req,res,fxn){
+		try {
+			await fxn(req,res);
+		}
+		catch (error){
+			this.error(error);
+		}
+	},
+	
+	//
+	ok : function(res,payload={}){
+		res.status(200).json({
+			status : true,
+			statusDetails : '',
+			payload,
+		});
+		return true;
+	},
+	ng : function(res,statusDetails){
+		res.status(200).json({
+			status : false,
+			statusDetails,
+			payload : {},
+		});
+		return false;
 	},
 	
 	// Generate the base HTML that is rendered on each page, before React is applied.
-	generateBaseHtml : function(route,globalComponentDependencies){
+	generateBaseHtml : function(route,globalStyleDependencies,globalComponentDependencies){
+		
+		const allStyles = route.styleDependencies.concat(globalStyleDependencies);
+		const styleIncludes = allStyles.map(path=>`<link href="${path}" rel="stylesheet">`).join('\n\t');
+		
 		const allScripts = route.componentDependencies.concat(`/page/${route.rootComponent}.js`).concat(globalComponentDependencies);
 		const componentIncludes = allScripts.map(path=>`<script src="${path}"></script>`).join('\n\t');
+		
 		const page = `\
 			<!DOCTYPE html>
 			<html>
 			<head>
 				<title>${route.pageTitle}</title>
+				${styleIncludes}
 				<script src="/js/react.development.js" crossorigin></script>
 				<script src="/js/react-dom.development.js" crossorigin></script>
 				${componentIncludes}

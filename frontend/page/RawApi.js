@@ -25,7 +25,7 @@ const RawApi = (props)=>{
 			<input data-key="method" defaultValue="GET" /><br/>
 			<br/>
 			.data (JSON)<br/>
-			<input data-key="data" defaultValue="{}" /><br/>
+			<textarea data-key="data" defaultValue="{}" /><br/>
 			<br/>
 			<button onClick={submit}>Send</button><br/>
 			<br/>
