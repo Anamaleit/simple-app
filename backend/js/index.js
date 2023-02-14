@@ -18,25 +18,25 @@ module.exports = async function(projectRootPath){
 	const app = express();
 	app.use(express.json());
 	// Interpret database config.
-	/*config.mongodbSpecification.forEach(entry=>{
-		const model = db.createModel(entry.collectionName,rel(entry.schemaPath));
+	config.mongodbSpecification.forEach(entry=>{
+		const model = db.resolveModel(entry.collectionName);
 		const apiHandlerGenerator = require(rel(entry.apiHandlerGeneratorPath));
 		const apiHandler = apiHandlerGenerator(model,entry.singularName);
 		//const requireAuth = require('../middleware/requireAuth')
 		//router.use(requireAuth);
 		const router = express.Router();
-		router.get   ('/'   ,apiHandler.getAll);
-		router.get   ('/:id',apiHandler.getOne);
-		router.patch ('/:id',apiHandler.update);
-		router.post  ('/'   ,apiHandler.create);
-		router.delete('/:id',apiHandler.delete);
+		router.get   ('/'   ,lib.genApiWrap(apiHandler.getAll));
+		router.get   ('/:id',lib.genApiWrap(apiHandler.getOne));
+		router.patch ('/:id',lib.genApiWrap(apiHandler.update));
+		router.post  ('/'   ,lib.genApiWrap(apiHandler.create));
+		router.delete('/:id',lib.genApiWrap(apiHandler.delete));
 		app.use(entry.apiBaseRoute,router);
-	});*/
+	});
 	{
 		const apiAuthHandlerGenerator = require(rel('/backend/api/auth.js'));
 		const apiAuthHandler = apiAuthHandlerGenerator(lib,db);
-		app.post('/api/auth/sign-up',(function(){return function(req,res){lib.wrapExceptionableFunction(req,res,apiAuthHandler.signUp);};})());
-		app.post('/api/auth/sign-in',apiAuthHandler.signIn);
+		app.post('/api/auth/sign-up',lib.genApiWrap(apiAuthHandler.signUp));
+		app.post('/api/auth/sign-in',lib.genApiWrap(apiAuthHandler.signIn));
 	}
 	{
 		app.post('/api/test',async ()=>{

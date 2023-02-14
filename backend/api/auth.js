@@ -1,4 +1,3 @@
-const mongoose  = require('mongoose' );
 const validator = require('validator');
 const bcrypt    = require('bcrypt'   );
 module.exports = (lib,db)=>({
@@ -6,7 +5,7 @@ module.exports = (lib,db)=>({
 	signUp : async (req,res)=>{
 		
 		// Inputs.
-		const {email,password} = req.body;
+		const {email,password} = req.body.data;
 		if (email    === undefined){return lib.ng(res,'Email not supplied.');}
 		if (password === undefined){return lib.ng(res,'Password not supplied.');}
 		
@@ -36,21 +35,27 @@ module.exports = (lib,db)=>({
 		
 		// Generate an auth token for the user to use in future requests.
 		const authToken = await db.generateAuthToken(email);
+		if (authToken === undefined){
+			return lib.ng(res,'Internal error.');
+		}
 		
 		// Return the auth token to the user, so they can use it.
-		return lib.ok(res,{authToken});
+		return lib.ok(res,{email,authToken});
 		
 	},
 	
 	signIn : async (req,res)=>{
 		
 		// Inputs.
-		const {email,password} = req.body;
+		const {email,password} = req.body.data;
 		if (email    === undefined){return lib.ng(res,'Email not supplied.');}
 		if (password === undefined){return lib.ng(res,'Password not supplied.');}
 		
 		// Get the user in question.
 		const user = await db.readOne('Users',{email});
+		if (user === undefined){
+			return lib.ng(res,'No user account exists with that email.');
+		}
 		
 		// Verify that password checks out with stored User hash.
 		const passwordOk = await bcrypt.compare(password,user.hash);
@@ -60,9 +65,12 @@ module.exports = (lib,db)=>({
 		
 		// Generate an auth token for the user to use in future requests.
 		const authToken = await db.generateAuthToken(email);
+		if (authToken === undefined){
+			return lib.ng(res,'Internal error.');
+		}
 		
 		// Return the auth token to the user, so they can use it.
-		return lib.ok(res,{authToken});
+		return lib.ok(res,{email,authToken});
 		
 	},
 	

@@ -3,16 +3,8 @@ const RawApi = (props)=>{
 		const path = event.target.parentNode.querySelector('[data-key=\'path\']').value;
 		const method = event.target.parentNode.querySelector('[data-key=\'method\']').value;
 		const data = JSON.parse(event.target.parentNode.querySelector('[data-key=\'data\']').value);
-		// Default options are marked with *
-		const response = await fetch(path, {
-			method, // GET PATCH POST DELETE
-			cache   : 'no-cache',
-			headers : {
-				'Content-Type' : 'application/json',
-			},
-			body    : ['PATCH','POST'].includes(method)?JSON.stringify(data):undefined, // body data type must match "Content-Type" header
-		});
-		const result = await response.json();
+		// GET PATCH POST DELETE
+		const result = await lib.request(path,method,['PATCH','POST'].includes(method)?JSON.stringify(data):undefined);
 		console.log(result);
 		event.target.parentNode.querySelector('[data-type=\'result\']').innerText = JSON.stringify(result);
 	}

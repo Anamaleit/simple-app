@@ -11,6 +11,7 @@ module.exports = {
 			urlPath       : '/',
 			pageTitle     : 'My App',
 			rootComponent : 'MainPage',
+			styleDependencies : [],
 			componentDependencies : [
 				'/component/Student.js',
 			],
@@ -19,6 +20,7 @@ module.exports = {
 			urlPath       : '/other',
 			pageTitle     : 'My App (Other)',
 			rootComponent : 'OtherPage',
+			styleDependencies : [],
 			componentDependencies : [
 				'/component/Student.js',
 			],
@@ -27,6 +29,7 @@ module.exports = {
 			urlPath       : '/view',
 			pageTitle     : 'View All Students',
 			rootComponent : 'ViewAllStudents',
+			styleDependencies : [],
 			componentDependencies : [
 				'/component/Student.js',
 			],
@@ -38,6 +41,13 @@ module.exports = {
 			styleDependencies : [
 				'/css/RawApi.css',
 			],
+			componentDependencies : [],
+		},
+		{
+			urlPath       : '/auth',
+			pageTitle     : 'Sign In / Sign Up',
+			rootComponent : 'Auth',
+			styleDependencies : [],
 			componentDependencies : [],
 		},
 	],

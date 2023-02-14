@@ -1,33 +1,59 @@
 const Auth = (props)=>{
-	const handleSubmit = async (e) => {
-		e.preventDefault()
-		await signup(email, password)
-	}
-	const submit = async (event) => {
+	const signUp = async (event)=>{
 		const email = event.target.parentNode.querySelector('[data-key=\'email\']').value;
 		const password = event.target.parentNode.querySelector('[data-key=\'password\']').value;
-		const response = await fetch('/api/auth/sign-up',{
-			method  : 'POST',
-			cache   : 'no-cache',
-			headers : {
-				'Content-Type' : 'application/json',
-			},
-			body    : JSON.stringify(data),
-		});
-		const result = await response.json();
-		console.log(result);
-		event.target.parentNode.querySelector('[data-type=\'result\']').innerText = JSON.stringify(result);
+		const result = await lib.request('/api/auth/sign-up','POST',{email,password});
+		if (result.status){
+			localStorage.setItem('email',result.payload.email);
+			localStorage.setItem('authToken',result.payload.authToken);
+			location.reload();
+		}
+		else{
+			event.target.parentNode.querySelector('[data-type=\'result\']').innerText = JSON.stringify(result);
+		}
 	}
+	const signIn = async (event)=>{
+		const email = event.target.parentNode.querySelector('[data-key=\'email\']').value;
+		const password = event.target.parentNode.querySelector('[data-key=\'password\']').value;
+		const result = await lib.request('/api/auth/sign-in','POST',{email,password});
+		if (result.status){
+			localStorage.setItem('email',result.payload.email);
+			localStorage.setItem('authToken',result.payload.authToken);
+			location.reload();
+		}
+		else{
+			event.target.parentNode.querySelector('[data-type=\'result\']').innerText = JSON.stringify(result);
+		}
+	}
+	const signOut = async (event)=>{
+		localStorage.removeItem('email');
+		localStorage.removeItem('authToken');
+		location.reload();
+	};
 	return (
 		<React.Fragment>
-			<div className="error" style={{marginTop: "20px"}}>{error}</div>
+			{
+				localStorage.getItem('email')!==null
+				?
+					<React.Fragment>
+						Currently signed in as:<br/>
+						{localStorage.getItem('email')}<br/>
+						<br/>
+						<button onClick={signOut}>Sign Out</button><br/>
+						<br/>
+					</React.Fragment>
+				:
+					''
+			}
 			email<br/>
 			<input data-key="email" type="email" defaultValue="user@example.com" /><br/>
 			<br/>
 			password<br/>
 			<input data-key="password" type="password" defaultValue="password" /><br/>
 			<br/>
-			<button onClick={submit}>Send</button><br/>
+			<button onClick={signIn}>Sign In</button> <button onClick={signUp}>Sign Up</button><br/>
+			<br/>
+			<div data-type="result"></div>
 		</React.Fragment>
 	);
 };

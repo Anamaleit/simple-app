@@ -1,4 +1,3 @@
-const bcrypt   = require('bcrypt'  );
 const mongoose = require('mongoose');
 const crypto   = require('crypto'  );
 module.exports = (rel,lib)=>class {
@@ -44,7 +43,7 @@ module.exports = (rel,lib)=>class {
 		const user = await this.readOne('Users',{email});if (user === undefined){return undefined;}
 		const entry = {
 			token      : crypto.randomBytes(32).toString('base64'),
-			expiration : lib.now() + duration,};
+			expiration : Math.round(lib.now() + duration),};
 		user.authTokens.push(entry);
 		if (await this.update(user) === undefined){return undefined;}
 		return entry.token;

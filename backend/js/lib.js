@@ -26,14 +26,16 @@ module.exports = {
 		return Object.keys(object).length === 0;
 	},
 	
-	// !!! HERE - use this for each endpoint
-	wrapExceptionableFunction : async function(req,res,fxn){
-		try {
-			await fxn(req,res);
-		}
-		catch (error){
-			this.error(error);
-		}
+	// More wordily named "generateExceptionWrappedApiFunction".
+	genApiWrap : function(fxn){
+		return (function(that,fxn){return async function(req,res){
+			try {
+				await fxn(req,res);
+			}
+			catch (error){
+				that.error(error);
+			}
+		};})(this,fxn);
 	},
 	
 	//
@@ -69,6 +71,7 @@ module.exports = {
 			<head>
 				<title>${route.pageTitle}</title>
 				${styleIncludes}
+				<script src="/js/lib-front.js"></script>
 				<script src="/js/react.development.js" crossorigin></script>
 				<script src="/js/react-dom.development.js" crossorigin></script>
 				${componentIncludes}
