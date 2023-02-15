@@ -1,57 +1,76 @@
-const mongoose = require('mongoose');
-module.exports = (model,itemNameSingular)=>({
-	getAll : async (req, res) => {
-		const items = await model.find({}).sort({createdAt: -1})
-		res.status(200).json(items)
+module.exports = (lib,db,collectionName,itemNameSingular)=>({
+	create : async (req,res)=>{
+		if (await lib.requireTeacherPermission(db,req,res)){
+			return false;
+		}
+		const data = req.body.data;
+		const item = await db.create(collectionName,data);
+		if (item === undefined){
+			return lib.ng(res,'Internal error.');
+		}
+		return lib.ok(res,{});
 	},
-	getOne : async (req, res) => {
-		const {id} = req.params
-		if(!mongoose.Types.ObjectId.isValid(id)) {
-			return res.status(404).json({error: "No "+itemNameSingular+" found"})
+	readAll : async (req,res)=>{
+		if (await lib.requireTeacherPermission(db,req,res)){
+			return false;
 		}
-		const item = await model.findById(id)
-		if (!item) {
-			return res.status(404).json({error: "No "+itemNameSingular+" found"})
+		const match = req.body.match;
+		const sort = req.body.sort;
+		const items = await db.readAll(collectionName,match,sort);
+		if (items === undefined){
+			return lib.ng(res,'Internal error.');
 		}
-		res.status(200).json(item)
+		return lib.ok(res,{items});
 	},
-	create : async (req, res) => {
-		// add doc to db
-		try { 
-			const item = await model.create(req.body)
-			res.status(200).json(item)
-		} catch (error) {
-			res.status(400).json({error: error.message})
+	readMultiple : async (req,res)=>{
+		if (await lib.requireTeacherPermission(db,req,res)){
+			return false;
 		}
+		const match = req.body.match;
+		const sort = req.body.sort;
+		const items = await db.readMultiple(collectionName,match,sort);
+		if (items === undefined){
+			return lib.ng(res,'Internal error.');
+		}
+		return lib.ok(res,{items});
 	},
-	delete : async (req, res) => {
-		const { id } = req.params
-		if(!mongoose.Types.ObjectId.isValid(id)) {
-			return res.status(404).json({error: "No "+itemNameSingular+" found"})
+	readOne : async (req,res)=>{
+		if (await lib.requireAccount(db,req,res)){
+			return false;
 		}
-		const item = await model.findOneAndDelete({_id: id})
-		if (!item) {
-			return res.status(404).json({error: "No "+itemNameSingular+" found"})
+		const {id} = req.params;
+		const item = await db.readOne(collectionName,{_id:id});
+		if (item === undefined){
+			return lib.ng(res,'Internal error.');
 		}
-		res.status(200).json(item)
+		return lib.ok(res,{item});
 	},
-	update : async (req, res) => {
-		const { id } = req.params
-		if(!mongoose.Types.ObjectId.isValid(id)) {
-			return res.status(404).json({error: "No "+itemNameSingular+" found"})
+	update : async (req,res)=>{
+		if (await lib.requireTeacherPermission(db,req,res)){
+			return false;
 		}
-		let item;
-		try {
-			item = await model.findOneAndUpdate({_id: id}, {
-				...req.body}, {new: true}
-			)
+		const {id} = req.params;
+		const data = req.body.data;
+		const item = await db.readOne(collectionName,{_id:id});
+		if (item === undefined){
+			return lib.ng(res,'Internal error.');
 		}
-		catch (error){
-			return res.status(400).json({error: error.message})
+		Object.keys(data).forEach((value,key)=>{
+			item[key] = value;
+		});
+		if (await db.update(item) === undefined){
+			return lib.ng(res,'Internal error.');
 		}
-		if (!item) {
-			return res.status(404).json({error: "No "+itemNameSingular+" found"})
+		return lib.ok(res,{});
+	},
+	deleteOne : async (req,res)=>{
+		if (await lib.requireTeacherPermission(db,req,res)){
+			return false;
 		}
-		res.status(200).json(item)
+		const {id} = req.params;
+		if (await db.deleteOne(collectionName,{_id:id}) === undefined){
+			return lib.ng(res,'Internal error.');
+		}
+		return lib.ok(res,{});
 	},
 });

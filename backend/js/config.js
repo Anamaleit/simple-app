@@ -1,11 +1,17 @@
+// Configuration.
 module.exports = {
-	// Configuration.
+	
+	// Server web address.
 	ip : '192.81.134.169',
 	port : 5000,
+	
+	// Global css and js.
 	globalStyleDependencies : [],
 	globalComponentDependencies : [
 		'/component/Navbar.js',
 	],
+	
+	// Pages.
 	pageRoutes : [
 		{
 			urlPath       : '/',
@@ -51,17 +57,17 @@ module.exports = {
 			componentDependencies : [],
 		},
 	],
+	
+	// Database types.
 	mongodbSpecification : [
 		{
 			collectionName          : 'Students',
-			singularName            : 'Student',
 			apiBaseRoute            : '/api/student/',
 			schemaPath              : '/backend/mongodb/schema/Students.js',
 			apiHandlerGeneratorPath : '/backend/api/generic.js',
 		},
 		{
 			collectionName          : 'Users',
-			singularName            : 'User',
 			apiBaseRoute            : '/api/user/',
 			schemaPath              : '/backend/mongodb/schema/Users.js',
 			apiHandlerGeneratorPath : '/backend/api/generic.js',

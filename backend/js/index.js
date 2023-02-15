@@ -2,7 +2,6 @@ module.exports = async function(projectRootPath){
 	
 	// Includes.
 	const express  = require('express'  );
-	const mongoose = require('mongoose' );
 	const path     = require('path'     );
 	const cliColor = require('cli-color');
 	
@@ -17,13 +16,11 @@ module.exports = async function(projectRootPath){
 	// Express routes.
 	const app = express();
 	app.use(express.json());
-	// Interpret database config.
+	
+	// API routes from the config file.
 	config.mongodbSpecification.forEach(entry=>{
-		const model = db.resolveModel(entry.collectionName);
 		const apiHandlerGenerator = require(rel(entry.apiHandlerGeneratorPath));
-		const apiHandler = apiHandlerGenerator(model,entry.singularName);
-		//const requireAuth = require('../middleware/requireAuth')
-		//router.use(requireAuth);
+		const apiHandler = apiHandlerGenerator(lib,db,entry.collectionName);
 		const router = express.Router();
 		router.get   ('/'   ,lib.genApiWrap(apiHandler.getAll));
 		router.get   ('/:id',lib.genApiWrap(apiHandler.getOne));
@@ -32,31 +29,39 @@ module.exports = async function(projectRootPath){
 		router.delete('/:id',lib.genApiWrap(apiHandler.delete));
 		app.use(entry.apiBaseRoute,router);
 	});
+	
+	// Sign In / Sign Up.
 	{
 		const apiAuthHandlerGenerator = require(rel('/backend/api/auth.js'));
 		const apiAuthHandler = apiAuthHandlerGenerator(lib,db);
-		app.post('/api/auth/sign-up',lib.genApiWrap(apiAuthHandler.signUp));
 		app.post('/api/auth/sign-in',lib.genApiWrap(apiAuthHandler.signIn));
+		app.post('/api/auth/sign-up',lib.genApiWrap(apiAuthHandler.signUp));
 	}
+	
+	// For testing.
 	{
 		app.post('/api/test',async ()=>{
 			const o = await db.readMultiple('Students',{name:'testzzz'});
 			console.log(o);
 		});
 	}
-	// Hook up custom page routes.
+	
+	// Page routes from the config file.
 	config.pageRoutes.forEach(route=>{
 		app.get(route.urlPath,function(req,res){
 			res.send(lib.generateBaseHtml(route,config.globalStyleDependencies,config.globalComponentDependencies));
 		});
 	});
-	// Hook up the rest of the raw routes.
+	
+	// Supporting file routes.
 	app.use('/component',express.static(rel('/frontend-transpiled/component')));
 	app.use('/css'      ,express.static(rel('/frontend/css')));
 	app.use('/js'       ,express.static(rel('/frontend/js')));
 	app.use('/page'     ,express.static(rel('/frontend-transpiled/page')));
+	
 	// Listen for clients.
 	app.listen(config.port,config.ip,()=>{
 		console.log(cliColor.green(`Server is up. Visit ${config.ip}:${config.port}.`))
 	});
+	
 };
