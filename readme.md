@@ -11,4 +11,4 @@
 	npm install --save validator
 	npm install --save bcrypt
 	npm install --save cli-color
-	npm install --save-dev @babel/core @babel/cli @babel/node @babel/preset-react
+	npm install --save-dev @babel/cli @babel/preset-react

@@ -32,6 +32,7 @@ const Auth = (props)=>{
 	};
 	return (
 		<React.Fragment>
+			<Navbar/>
 			{
 				localStorage.getItem('email')!==null
 				?
