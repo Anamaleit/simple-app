@@ -73,29 +73,29 @@ module.exports = (rel,lib)=>class {
 		const email = req.body.meta.email;
 		const user = this.readOne('Users',{email});
 		if (user === undefined){
-			return this.ng(res,'Internal error.');
+			return lib.ng(res,'Internal error.');
 		}
 		if (user.isTeacher !== true && user.isAdmin !== true){
-			return this.ng(res,'Not a teacher nor an admin (required to be one of those for this request).');
+			return lib.ng(res,'Not a teacher nor an admin (required to be one of those for this request).');
 		}
 		return true;
 	}
 	async requireAccount(db,req,res){
 		if (req.body.meta === undefined){
-			return this.ng(res,'.meta missing from request.');
+			return lib.ng(res,'.meta missing from request.');
 		}
 		if (req.body.meta.email === undefined){
-			return this.ng(res,'.meta.email missing from request.');
+			return lib.ng(res,'.meta.email missing from request.');
 		}
 		if (req.body.meta.authToken === undefined){
-			return this.ng(res,'.meta.authToken missing from request.');
+			return lib.ng(res,'.meta.authToken missing from request.');
 		}
 		const ok = db.verifyAuthToken(req.body.meta.email,req.body.meta.authToken);
 		if (ok === undefined){
-			return this.ng(res,'Internal error.');
+			return lib.ng(res,'Internal error.');
 		}
 		if (ok === false){
-			return this.ng(res,'You do not have adequate permissions for this request.');
+			return lib.ng(res,'You do not have adequate permissions for this request.');
 		}
 		return true;
 	}
