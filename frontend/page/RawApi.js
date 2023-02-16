@@ -14,7 +14,7 @@ const RawApi = (props)=>{
 			<input data-key="path" defaultValue="/api/student/get-all/" /><br/>
 			<br/>
 			HTTP Method<br/>
-			<input data-key="method" defaultValue="POST" /><br/>
+			<input data-key="method" defaultValue="GET" /><br/>
 			<br/>
 			.data (JSON)<br/>
 			<textarea data-key="data" defaultValue="" /><br/>

@@ -2,9 +2,9 @@ const lib = {
 	
 	request : async function(path,method,data){
 		
-		let email = localStorage.getItem("email");
-		if (email === null){
-			email = undefined;
+		let id = localStorage.getItem("id");
+		if (id === null){
+			id = undefined;
 		}
 		
 		let authToken = localStorage.getItem("authToken");
@@ -12,15 +12,14 @@ const lib = {
 			authToken = undefined;
 		}
 		
-		const meta = {
-			email,
-			authToken,
-		};
 		const response = await fetch(path,{
 			method,
 			cache   : 'no-cache',
-			headers : {'Content-Type' : 'application/json',},
-			body    : JSON.stringify({meta,data}),
+			headers : {
+				'Content-Type' : 'application/json',
+				'Authorization' : `Custom ${btoa(JSON.stringify({id,authToken}))}`,
+			},
+			body    : JSON.stringify(data),
 		});
 		const result = await response.json();
 		return result;

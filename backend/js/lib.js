@@ -53,7 +53,7 @@ module.exports = {
 			statusDetails,
 			payload : {},
 		});
-		return false;
+		return undefined;
 	},
 	
 	// Generate the base HTML that is rendered on each page, before React is applied.

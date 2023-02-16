@@ -1,9 +1,9 @@
 module.exports = (lib,db,collectionName,itemNameSingular)=>({
 	create : async (req,res)=>{
-		if (!await db.requireTeacherPermission(db,req,res)){
+		if (await db.requireTeacherPermission(db,req,res) !== true){
 			return false;
 		}
-		const data = req.body.data;
+		const data = req.body;
 		const item = await db.create(collectionName,data);
 		if (item === undefined){
 			return lib.ng(res,'Internal error.');
@@ -11,32 +11,17 @@ module.exports = (lib,db,collectionName,itemNameSingular)=>({
 		return lib.ok(res,{});
 	},
 	readAll : async (req,res)=>{
-		if (!await db.requireTeacherPermission(db,req,res)){
+		if (await db.requireTeacherPermission(db,req,res) !== true){
 			return false;
 		}
-		const match = req.body.match;
-		const sort = req.body.sort;
-		const items = await db.readAll(collectionName,match,sort);
-		console.log(items);
-		if (items === undefined){
-			return lib.ng(res,'Internal error.');
-		}
-		return lib.ok(res,{items});
-	},
-	readMultiple : async (req,res)=>{
-		if (!await db.requireTeacherPermission(db,req,res)){
-			return false;
-		}
-		const match = req.body.match;
-		const sort = req.body.sort;
-		const items = await db.readMultiple(collectionName,match,sort);
+		const items = await db.readAll(collectionName);
 		if (items === undefined){
 			return lib.ng(res,'Internal error.');
 		}
 		return lib.ok(res,{items});
 	},
 	readOne : async (req,res)=>{
-		if (!await db.requireAccount(db,req,res)){
+		if (await db.requireAccount(db,req,res) !== true){
 			return false;
 		}
 		const {id} = req.params;
@@ -47,11 +32,11 @@ module.exports = (lib,db,collectionName,itemNameSingular)=>({
 		return lib.ok(res,{item});
 	},
 	update : async (req,res)=>{
-		if (!await db.requireTeacherPermission(db,req,res)){
+		if (await db.requireTeacherPermission(db,req,res) !== true){
 			return false;
 		}
 		const {id} = req.params;
-		const data = req.body.data;
+		const data = req.body;
 		const item = await db.readOne(collectionName,{_id:id});
 		if (item === undefined){
 			return lib.ng(res,'Internal error.');
@@ -65,7 +50,7 @@ module.exports = (lib,db,collectionName,itemNameSingular)=>({
 		return lib.ok(res,{});
 	},
 	deleteOne : async (req,res)=>{
-		if (!await db.requireTeacherPermission(db,req,res)){
+		if (await db.requireTeacherPermission(db,req,res) !== true){
 			return false;
 		}
 		const {id} = req.params;

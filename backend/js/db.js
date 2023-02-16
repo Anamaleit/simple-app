@@ -39,8 +39,8 @@ module.exports = (rel,lib)=>class {
 	}
 	
 	//
-	async generateAuthToken(email,duration=365*24*60*60){
-		const user = await this.readOne('Users',{email});if (user === undefined){return undefined;}
+	async generateAuthToken(id,duration=365*24*60*60){
+		const user = await this.readOne('Users',{_id:id});if (user === undefined){return undefined;}
 		const entry = {
 			token      : crypto.randomBytes(32).toString('base64'),
 			expiration : Math.round(lib.now() + duration),};
@@ -51,8 +51,8 @@ module.exports = (rel,lib)=>class {
 		if (await this.update(user) === undefined){return undefined;}
 		return entry.token;
 	}
-	async verifyAuthToken(email,token){
-		const user = await this.readOne('Users',{email});if (user === undefined){return undefined;}
+	async verifyAuthToken(id,token){
+		const user = await this.readOne('Users',{_id:id});if (user === undefined){return undefined;}
 		// Remove old tokens for housekeeping.
 		const now = lib.now();
 		if (user.authTokens === undefined){
@@ -65,13 +65,43 @@ module.exports = (rel,lib)=>class {
 	
 	
 	
-	async requireTeacherPermission(db,req,res){
-		const accountOk = await this.requireAccount(db,req,res);
-		if (accountOk !== true){
-			return false;
+	
+	async parseAuth(db,req,res){
+		const authorization = req.header('Authorization');
+		if (authorization === undefined){
+			return lib.ng(res,'Authorization header missing from request.');
 		}
-		const email = req.body.meta.email;
-		const user = await this.readOne('Users',{email});
+		const parts = authorization.split(' ');
+		if (parts[0] === undefined){
+			return lib.ng(res,'Authorization header missing first part.');
+		}
+		if (parts[0] !== 'Custom'){
+			return lib.ng(res,'Authorization header first part is incorrect.');
+		}
+		if (parts[1] === undefined){
+			return lib.ng(res,'Authorization header missing second part.');
+		}
+		let meta;
+		try {
+			meta = JSON.parse(Buffer.from(parts[1],'base64').toString());
+		}
+		catch (error){
+			lib.error(error);
+			return lib.ng(res,'Malformed authorization header second part.');
+		}
+		if (meta.id === undefined){
+			return lib.ng(res,'Authorization header second part missing id.');
+		}
+		if (meta.authToken === undefined){
+			return lib.ng(res,'Authorization header second part missing authToken.');
+		}
+		return meta;
+	}
+	async requireTeacherPermission(db,req,res){
+		const meta = await this.parseAuth(db,req,res);if (meta === undefined){return undefined;}
+		const accountOk = await this.requireAccount(db,req,res);if (accountOk !== true){return undefined;}
+		const id = meta.id;
+		const user = await this.readOne('Users',{_id:id});
 		if (user === undefined){
 			return lib.ng(res,'Internal error.');
 		}
@@ -81,16 +111,8 @@ module.exports = (rel,lib)=>class {
 		return true;
 	}
 	async requireAccount(db,req,res){
-		if (req.body.meta === undefined){
-			return lib.ng(res,'.meta missing from request.');
-		}
-		if (req.body.meta.email === undefined){
-			return lib.ng(res,'.meta.email missing from request.');
-		}
-		if (req.body.meta.authToken === undefined){
-			return lib.ng(res,'.meta.authToken missing from request.');
-		}
-		const ok = db.verifyAuthToken(req.body.meta.email,req.body.meta.authToken);
+		const meta = await this.parseAuth(db,req,res);if (meta === undefined){return undefined;}
+		const ok = await db.verifyAuthToken(meta.id,meta.authToken);
 		if (ok === undefined){
 			return lib.ng(res,'Internal error.');
 		}

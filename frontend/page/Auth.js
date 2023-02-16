@@ -4,7 +4,8 @@ const Auth = (props)=>{
 		const password = event.target.parentNode.querySelector('[data-key=\'password\']').value;
 		const result = await lib.request('/api/auth/sign-up','POST',{email,password});
 		if (result.status){
-			localStorage.setItem('email',result.payload.email);
+			localStorage.setItem('id'       ,result.payload.id       );
+			localStorage.setItem('email'    ,result.payload.email    );
 			localStorage.setItem('authToken',result.payload.authToken);
 			location.reload();
 		}
@@ -17,7 +18,8 @@ const Auth = (props)=>{
 		const password = event.target.parentNode.querySelector('[data-key=\'password\']').value;
 		const result = await lib.request('/api/auth/sign-in','POST',{email,password});
 		if (result.status){
-			localStorage.setItem('email',result.payload.email);
+			localStorage.setItem('id'       ,result.payload.id       );
+			localStorage.setItem('email'    ,result.payload.email    );
 			localStorage.setItem('authToken',result.payload.authToken);
 			location.reload();
 		}
@@ -26,7 +28,8 @@ const Auth = (props)=>{
 		}
 	}
 	const signOut = async (event)=>{
-		localStorage.removeItem('email');
+		localStorage.removeItem('id'       );
+		localStorage.removeItem('email'    );
 		localStorage.removeItem('authToken');
 		location.reload();
 	};

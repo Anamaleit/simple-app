@@ -5,7 +5,7 @@ module.exports = (lib,db)=>({
 	signUp : async (req,res)=>{
 		
 		// Inputs.
-		const {email,password} = req.body.data;
+		const {email,password} = req.body;
 		if (email    === undefined){return lib.ng(res,'Email not supplied.');}
 		if (password === undefined){return lib.ng(res,'Password not supplied.');}
 		
@@ -29,25 +29,26 @@ module.exports = (lib,db)=>({
 		const hash = await bcrypt.hash(password,salt);
 		
 		// Create the user in the database.
-		if (await db.create('Users',{email,hash}) === undefined){
+		const user = await db.create('Users',{email,hash});
+		if (user === undefined){
 			return lib.ng(res,'Internal Error.');
 		}
 		
 		// Generate an auth token for the user to use in future requests.
-		const authToken = await db.generateAuthToken(email);
+		const authToken = await db.generateAuthToken(user._id);
 		if (authToken === undefined){
 			return lib.ng(res,'Internal error.');
 		}
 		
 		// Return the auth token to the user, so they can use it.
-		return lib.ok(res,{email,authToken});
+		return lib.ok(res,{id:user._id,email,authToken});
 		
 	},
 	
 	signIn : async (req,res)=>{
 		
 		// Inputs.
-		const {email,password} = req.body.data;
+		const {email,password} = req.body;
 		if (email    === undefined){return lib.ng(res,'Email not supplied.');}
 		if (password === undefined){return lib.ng(res,'Password not supplied.');}
 		
@@ -64,13 +65,13 @@ module.exports = (lib,db)=>({
 		}
 		
 		// Generate an auth token for the user to use in future requests.
-		const authToken = await db.generateAuthToken(email);
+		const authToken = await db.generateAuthToken(user._id);
 		if (authToken === undefined){
 			return lib.ng(res,'Internal error.');
 		}
 		
 		// Return the auth token to the user, so they can use it.
-		return lib.ok(res,{email,authToken});
+		return lib.ok(res,{id:user._id,email,authToken});
 		
 	},
 	
