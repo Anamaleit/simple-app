@@ -1,6 +1,6 @@
 module.exports = (lib,db,collectionName,itemNameSingular)=>({
 	create : async (req,res)=>{
-		if (await db.requireTeacherPermission(db,req,res)){
+		if (!await db.requireTeacherPermission(db,req,res)){
 			return false;
 		}
 		const data = req.body.data;
@@ -11,7 +11,7 @@ module.exports = (lib,db,collectionName,itemNameSingular)=>({
 		return lib.ok(res,{});
 	},
 	readAll : async (req,res)=>{
-		if (await db.requireTeacherPermission(db,req,res)){
+		if (!await db.requireTeacherPermission(db,req,res)){
 			return false;
 		}
 		const match = req.body.match;
@@ -23,7 +23,7 @@ module.exports = (lib,db,collectionName,itemNameSingular)=>({
 		return lib.ok(res,{items});
 	},
 	readMultiple : async (req,res)=>{
-		if (await db.requireTeacherPermission(db,req,res)){
+		if (!await db.requireTeacherPermission(db,req,res)){
 			return false;
 		}
 		const match = req.body.match;
@@ -35,7 +35,7 @@ module.exports = (lib,db,collectionName,itemNameSingular)=>({
 		return lib.ok(res,{items});
 	},
 	readOne : async (req,res)=>{
-		if (await db.requireAccount(db,req,res)){
+		if (!await db.requireAccount(db,req,res)){
 			return false;
 		}
 		const {id} = req.params;
@@ -46,7 +46,7 @@ module.exports = (lib,db,collectionName,itemNameSingular)=>({
 		return lib.ok(res,{item});
 	},
 	update : async (req,res)=>{
-		if (await db.requireTeacherPermission(db,req,res)){
+		if (!await db.requireTeacherPermission(db,req,res)){
 			return false;
 		}
 		const {id} = req.params;
@@ -64,7 +64,7 @@ module.exports = (lib,db,collectionName,itemNameSingular)=>({
 		return lib.ok(res,{});
 	},
 	deleteOne : async (req,res)=>{
-		if (await db.requireTeacherPermission(db,req,res)){
+		if (!await db.requireTeacherPermission(db,req,res)){
 			return false;
 		}
 		const {id} = req.params;
