@@ -17,6 +17,7 @@ module.exports = (lib,db,collectionName,itemNameSingular)=>({
 		const match = req.body.match;
 		const sort = req.body.sort;
 		const items = await db.readAll(collectionName,match,sort);
+		console.log(items);
 		if (items === undefined){
 			return lib.ng(res,'Internal error.');
 		}

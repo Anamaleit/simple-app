@@ -71,7 +71,7 @@ module.exports = (rel,lib)=>class {
 			return false;
 		}
 		const email = req.body.meta.email;
-		const user = this.readOne('Users',{email});
+		const user = await this.readOne('Users',{email});
 		if (user === undefined){
 			return lib.ng(res,'Internal error.');
 		}

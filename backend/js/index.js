@@ -22,11 +22,12 @@ module.exports = async function(projectRootPath){
 		const apiHandlerGenerator = require(rel(entry.apiHandlerGeneratorPath));
 		const apiHandler = apiHandlerGenerator(lib,db,entry.collectionName);
 		const router = express.Router();
-		router.get   ('/'   ,lib.genApiWrap(apiHandler.getAll));
-		router.get   ('/:id',lib.genApiWrap(apiHandler.getOne));
-		router.patch ('/:id',lib.genApiWrap(apiHandler.update));
-		router.post  ('/'   ,lib.genApiWrap(apiHandler.create));
-		router.delete('/:id',lib.genApiWrap(apiHandler.delete));
+		router.post  ('/get-all/'     ,lib.genApiWrap(apiHandler.readAll     ));
+		router.post  ('/get-multiple/',lib.genApiWrap(apiHandler.readMultiple));
+		router.post  ('/get-one/:id'  ,lib.genApiWrap(apiHandler.readOne     ));
+		router.patch ('/update/:id'   ,lib.genApiWrap(apiHandler.update      ));
+		router.post  ('/create/'      ,lib.genApiWrap(apiHandler.create      ));
+		router.delete('/delete/:id'   ,lib.genApiWrap(apiHandler.deleteOne   ));
 		app.use(entry.apiBaseRoute,router);
 	});
 	
