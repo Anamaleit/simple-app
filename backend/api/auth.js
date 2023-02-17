@@ -41,7 +41,13 @@ module.exports = (lib,db)=>({
 		}
 		
 		// Return the auth token to the user, so they can use it.
-		return lib.ok(res,{id:user._id,email,authToken});
+		return lib.ok(res,{
+			id : user._id,
+			email,
+			authToken,
+			isAdmin : user.isAdmin,
+			isTeacher : user.isTeacher,
+		});
 		
 	},
 	

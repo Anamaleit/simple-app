@@ -24,6 +24,9 @@ module.exports = (lib,db,collectionName,itemNameSingular)=>({
 		if (await db.requireAccount(db,req,res) !== true){
 			return false;
 		}
+		if (await db.requireCanView(db,req,res,collectionName) !== true){
+			return false;
+		}
 		const {id} = req.params;
 		const item = await db.readOne(collectionName,{_id:id});
 		if (item === undefined){

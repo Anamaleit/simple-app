@@ -1,4 +1,5 @@
 const MainPage = (props)=>{
+	if (lib.redirectToAuthIfNotSignedIn()){return;}
 	return (
 		<React.Fragment>
 			<Navbar/>

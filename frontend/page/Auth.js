@@ -7,6 +7,8 @@ const Auth = (props)=>{
 			localStorage.setItem('id'       ,result.payload.id       );
 			localStorage.setItem('email'    ,result.payload.email    );
 			localStorage.setItem('authToken',result.payload.authToken);
+			localStorage.setItem('isAdmin'  ,result.payload.isAdmin  );
+			localStorage.setItem('isTeacher',result.payload.isTeacher);
 			location.reload();
 		}
 		else{
@@ -21,6 +23,8 @@ const Auth = (props)=>{
 			localStorage.setItem('id'       ,result.payload.id       );
 			localStorage.setItem('email'    ,result.payload.email    );
 			localStorage.setItem('authToken',result.payload.authToken);
+			localStorage.setItem('isAdmin'  ,result.payload.isAdmin  );
+			localStorage.setItem('isTeacher',result.payload.isTeacher);
 			location.reload();
 		}
 		else{
@@ -28,10 +32,7 @@ const Auth = (props)=>{
 		}
 	}
 	const signOut = async (event)=>{
-		localStorage.removeItem('id'       );
-		localStorage.removeItem('email'    );
-		localStorage.removeItem('authToken');
-		location.reload();
+		lib.signOut();
 	};
 	return (
 		<React.Fragment>
@@ -47,17 +48,18 @@ const Auth = (props)=>{
 						<br/>
 					</React.Fragment>
 				:
-					''
+					<React.Fragment>
+						email<br/>
+						<input data-key="email" type="email" defaultValue="user@example.com" /><br/>
+						<br/>
+						password<br/>
+						<input data-key="password" type="password" defaultValue="password" /><br/>
+						<br/>
+						<button onClick={signIn}>Sign In</button> <button onClick={signUp}>Sign Up</button><br/>
+						<br/>
+						<div data-type="result"></div>
+					</React.Fragment>
 			}
-			email<br/>
-			<input data-key="email" type="email" defaultValue="user@example.com" /><br/>
-			<br/>
-			password<br/>
-			<input data-key="password" type="password" defaultValue="password" /><br/>
-			<br/>
-			<button onClick={signIn}>Sign In</button> <button onClick={signUp}>Sign Up</button><br/>
-			<br/>
-			<div data-type="result"></div>
 		</React.Fragment>
 	);
 };

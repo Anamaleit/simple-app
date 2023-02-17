@@ -97,6 +97,26 @@ module.exports = (rel,lib)=>class {
 		}
 		return meta;
 	}
+	async requireCanView(db,req,res){
+		const meta = await this.parseAuth(db,req,res);if (meta === undefined){return undefined;}
+		const accountOk = await this.requireAccount(db,req,res);if (accountOk !== true){return undefined;}
+		const id = meta.id;
+		const user = await this.readOne('Users',{_id:id});
+		if (user === undefined){
+			return lib.ng(res,'Internal error.');
+		}
+		if (user.canView === undefined || user.canView[collectionName] === undefined || !Array.isArray(user.canView[collectionName])){
+			return lib.ng(res,'You don\'t have permission to view any item of this type.');
+		}
+		const idRequested = req.params.id;
+		if (idRequested === undefined){
+			return lib.ng(res,'No requested id was specified.');
+		}
+		if (!user.canView[collectionName].includes(idRequested)){
+			return lib.ng(res,'Do not have permission to view this item.');
+		}
+		return true;
+	}
 	async requireTeacherPermission(db,req,res){
 		const meta = await this.parseAuth(db,req,res);if (meta === undefined){return undefined;}
 		const accountOk = await this.requireAccount(db,req,res);if (accountOk !== true){return undefined;}

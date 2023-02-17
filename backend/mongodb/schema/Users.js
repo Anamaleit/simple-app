@@ -3,6 +3,7 @@ module.exports = {
 	email : {
 		type : String,
 		required : true,
+		unique: true,
 	},
 	hash : {
 		type : String,
@@ -25,5 +26,12 @@ module.exports = {
 	isAdmin : {
 		type : Boolean,
 		required : false,
+	},
+	canView : {
+		Students : [
+			{
+				type : mongoose.Types.ObjectId,
+			},
+		],
 	},
 };

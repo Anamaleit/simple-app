@@ -1,5 +1,35 @@
 const lib = {
 	
+	isSignedIn : function(){
+		return localStorage.getItem('authToken') !== null;
+	},
+	// Doesn't actually expose anything important, which still must go through the API.
+	isAdmin : function(){
+		return localStorage.getItem('isAdmin') || false;
+	},
+	isTeacher : function(){
+		return localStorage.getItem('isTeacher') || false;
+	},
+	getEmail : function(){
+		return localStorage.getItem('email') || '';
+	},
+	signOut : function(){
+		localStorage.removeItem('id'       );
+		localStorage.removeItem('email'    );
+		localStorage.removeItem('authToken');
+		localStorage.removeItem('isAdmin'  );
+		localStorage.removeItem('isTeacher');
+		location.reload();
+	},
+	
+	redirectToAuthIfNotSignedIn : function(){
+		if (!this.isSignedIn()){
+			location.href = '/auth';
+			return true;
+		}
+		return false;
+	},
+	
 	request : async function(path,method,data){
 		
 		let id = localStorage.getItem("id");

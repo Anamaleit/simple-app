@@ -6,7 +6,9 @@ module.exports = {
 	port : 5000,
 	
 	// Global css and js.
-	globalStyleDependencies : [],
+	globalStyleDependencies : [
+		'/css/global.css'
+	],
 	globalComponentDependencies : [
 		'/component/Navbar.js',
 	],
