@@ -76,8 +76,8 @@ module.exports = {
 				<script src="/js/react-dom.development.js" crossorigin></script>
 				${componentIncludes}
 				<script>
-					document.addEventListener('DOMContentLoaded',function(){
-						ReactDOM.createRoot(document.querySelector('#react-root')).render(${route.rootComponent}());
+					document.addEventListener('DOMContentLoaded',async function(){
+						ReactDOM.createRoot(document.querySelector('#react-root')).render(await ${route.rootComponent}());
 					});
 				</script>
 			</head>

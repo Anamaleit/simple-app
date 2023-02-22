@@ -25,6 +25,15 @@ module.exports = {
 			],
 		},
 		{
+			urlPath       : '/Absensi',
+			pageTitle     : 'Absensi',
+			rootComponent : 'Absensi',
+			styleDependencies : [],
+			componentDependencies : [
+				'/component/AbsensiDetails.js',
+			],
+		},
+		{
 			urlPath       : '/other',
 			pageTitle     : 'My App (Other)',
 			rootComponent : 'OtherPage',
