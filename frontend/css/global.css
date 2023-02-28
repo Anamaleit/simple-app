@@ -117,3 +117,69 @@ textarea {
   width: 465px;
   text-align: justify;
 }
+
+.keterangan, 
+.nilai,
+.absensi,
+.status-pay {
+  border: 1px solid;
+}
+
+.keterangan h2, 
+.nilai h2,
+.absensi h2,
+.status-pay h2 {
+  padding: 20px;
+}
+
+.keterangan .content .titles, 
+.nilai .content .titles,
+.absensi .content .titles,
+.status-pay .content .titles {
+  display: flex;
+  justify-content: space-around;
+}
+
+.keterangan-table, 
+.nilai-table,
+.absensi-table,
+.status-pay-table {
+  display: flex;
+  padding: 6px;
+  border: 1px solid;
+}
+
+.keterangan-table .num,
+.nilai-table .num,
+.absensi-table .num,
+.status-pay-table .num {
+  margin-left: 14%;
+}
+
+.keterangan-table .name,
+.nilai-table .name,
+.absensi-table .name,
+.status-pay-table .name {
+  margin-left: 25%;
+}
+
+.keterangan-table .action,
+.nilai-table .action,
+.absensi-table .action,
+.status-pay-table .action {
+  position: absolute;
+  right: 21%;
+}
+
+.status-pay-save {
+  margin-top: 20px;
+  margin-left: 45%;
+}
+
+.keterangan-edit-button {
+  margin-left: 10px;
+}
+
+.nilai-edit-button {
+  margin-left: 10px;
+}

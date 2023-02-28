@@ -1,5 +1,21 @@
 const lib = {
 	
+	//
+	getParam : (param)=>{
+		const urlSearchParams = new URLSearchParams(location.search);
+		const value = urlSearchParams.get(param);
+		if (value === null){return undefined;}
+		return value;
+	},
+	modifyGetParamsAndRedirect : (setObject)=>{
+		const urlSearchParams = new URLSearchParams(location.search);
+		Object.keys(setObject).forEach(key=>{
+			const value = setObject[key];
+			urlSearchParams.set(key,value);
+		});
+		location.search = urlSearchParams;
+	},
+	
 	isSignedIn : function(){
 		return localStorage.getItem('authToken') !== null;
 	},
