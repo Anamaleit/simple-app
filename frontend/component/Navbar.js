@@ -1,4 +1,4 @@
-const Navbar = (props)=>{
+export default (props)=>{
 	// Non-user.
 	if (!lib.isSignedIn()){
 		return (

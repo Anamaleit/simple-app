@@ -54,10 +54,11 @@ module.exports = async function(projectRootPath){
 	});
 	
 	// Supporting file routes.
-	app.use('/component',express.static(rel('/frontend-transpiled/component')));
-	app.use('/css'      ,express.static(rel('/frontend/css')));
-	app.use('/js'       ,express.static(rel('/frontend/js')));
-	app.use('/page'     ,express.static(rel('/frontend-transpiled/page')));
+	app.use('/component'          ,express.static(rel('/frontend-transpiled/component')));
+	app.use('/css'                ,express.static(rel('/frontend/css')));
+	app.use('/js'                 ,express.static(rel('/frontend/js')));
+	app.use('/page'               ,express.static(rel('/frontend-transpiled/page')));
+	app.use('/npm/react-bootstrap',express.static(rel('/node_modules/react-bootstrap/dist/react-bootstrap.min.js')));
 	
 	// Listen for clients.
 	app.listen(config.port,config.ip,()=>{

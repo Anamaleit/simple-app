@@ -1,5 +1,8 @@
 const lib = {
 	
+	// !!! implement better
+	format : (date)=>date.toString(),
+	
 	//
 	getParam : (param)=>{
 		const urlSearchParams = new URLSearchParams(location.search);

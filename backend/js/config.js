@@ -5,51 +5,37 @@ module.exports = {
 	ip : '192.81.134.169',
 	port : 5000,
 	
-	// Global css and js.
-	globalStyleDependencies : [
-		'/css/global.css'
-	],
-	globalComponentDependencies : [
-		'/component/Navbar.js',
-	],
-	
 	// Pages.
 	pageRoutes : [
 		{
 			urlPath       : '/',
 			pageTitle     : 'My App',
-			rootComponent : 'MainPage',
+			rootComponent : 'Home',
 			styleDependencies : [],
-			componentDependencies : [
-				'/component/Student.js',
-			],
 		},
 		{
 			urlPath       : '/Absensi',
 			pageTitle     : 'Absensi',
 			rootComponent : 'Absensi',
 			styleDependencies : [],
-			componentDependencies : [
-				'/component/AbsensiDetails.js',
-			],
+		},
+		{
+			urlPath       : '/Keterangan',
+			pageTitle     : 'Keterangan',
+			rootComponent : 'Keterangan',
+			styleDependencies : [],
 		},
 		{
 			urlPath       : '/other',
 			pageTitle     : 'My App (Other)',
 			rootComponent : 'OtherPage',
 			styleDependencies : [],
-			componentDependencies : [
-				'/component/Student.js',
-			],
 		},
 		{
 			urlPath       : '/view',
 			pageTitle     : 'View All Students',
 			rootComponent : 'ViewAllStudents',
 			styleDependencies : [],
-			componentDependencies : [
-				'/component/Student.js',
-			],
 		},
 		{
 			urlPath       : '/raw-api',
@@ -58,14 +44,12 @@ module.exports = {
 			styleDependencies : [
 				'/css/RawApi.css',
 			],
-			componentDependencies : [],
 		},
 		{
 			urlPath       : '/auth',
 			pageTitle     : 'Sign In / Sign Up',
 			rootComponent : 'Auth',
 			styleDependencies : [],
-			componentDependencies : [],
 		},
 	],
 	
@@ -81,6 +65,12 @@ module.exports = {
 			collectionName          : 'Users',
 			apiBaseRoute            : '/api/user/',
 			schemaPath              : '/backend/mongodb/schema/Users.js',
+			apiHandlerGeneratorPath : '/backend/api/generic.js',
+		},
+		{
+			collectionName          : 'Announcements',
+			apiBaseRoute            : '/api/announcement/',
+			schemaPath              : '/backend/mongodb/schema/Announcements.js',
 			apiHandlerGeneratorPath : '/backend/api/generic.js',
 		},
 	],

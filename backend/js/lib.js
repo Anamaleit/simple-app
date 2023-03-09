@@ -58,23 +58,23 @@ module.exports = {
 	
 	// Generate the base HTML that is rendered on each page, before React is applied.
 	generateBaseHtml : function(route,globalStyleDependencies,globalComponentDependencies){
-		
-		const allStyles = route.styleDependencies.concat(globalStyleDependencies);
-		const styleIncludes = allStyles.map(path=>`<link href="${path}" rel="stylesheet">`).join('\n\t');
-		
-		const allScripts = route.componentDependencies.concat(`/page/${route.rootComponent}.js`).concat(globalComponentDependencies);
-		const componentIncludes = allScripts.map(path=>`<script src="${path}"></script>`).join('\n\t');
-		
 		const page = `\
 			<!DOCTYPE html>
 			<html>
 			<head>
 				<title>${route.pageTitle}</title>
-				${styleIncludes}
+				<link href="/css/global.css" rel="stylesheet">
+				<link href="/css/bootstrap.min.css" rel="stylesheet">
+				${route.styleDependencies.map(path=>`<link href="${path}" rel="stylesheet">`).join('\n\t')}
 				<script src="/js/lib-front.js"></script>
-				<script src="/js/react.development.js" crossorigin></script>
-				<script src="/js/react-dom.development.js" crossorigin></script>
-				${componentIncludes}
+				<script src="/js/react.production.min.js"></script>
+				<script src="/js/react-dom.production.min.js"></script>
+				<script src="/js/react-bootstrap.min.js"></script>
+				<script type="module">
+					import ${route.rootComponent} from "/page/${route.rootComponent}.js";
+					window.${route.rootComponent} = ${route.rootComponent};
+				</script>
+				<style src="/js/react-bootstrap.min.js"></style>
 				<script>
 					document.addEventListener('DOMContentLoaded',async function(){
 						ReactDOM.createRoot(document.querySelector('#react-root')).render(await ${route.rootComponent}());

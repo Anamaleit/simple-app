@@ -1,4 +1,4 @@
-const AbsensiDetails = (props)=>{
+export default (props)=>{
 	return (
 		<div className="absensi-table">
 			<div className="num">

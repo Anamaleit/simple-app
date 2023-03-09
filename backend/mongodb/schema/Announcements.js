@@ -1,9 +1,7 @@
 const mongoose = require('mongoose'); // Needed for special mongodb types.
 module.exports = {
 	classes : [
-		{
-			type : String,
-		},
+		{type : String,},
 	],
 	title : {
 		type : String,
