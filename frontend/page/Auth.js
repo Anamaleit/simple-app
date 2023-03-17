@@ -1,4 +1,6 @@
-window.Auth = (props)=>{
+import Navbar from "/component/Navbar.js";
+
+export default (props)=>{
 	const signUp = async (event)=>{
 		const email = event.target.parentNode.querySelector('[data-key=\'email\']').value;
 		const password = event.target.parentNode.querySelector('[data-key=\'password\']').value;

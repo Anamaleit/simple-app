@@ -2,7 +2,7 @@
 module.exports = {
 	
 	// Server web address.
-	ip : '192.81.134.169',
+	ip : '127.0.2.2',
 	port : 5000,
 	
 	// Pages.
@@ -23,6 +23,12 @@ module.exports = {
 			urlPath       : '/Keterangan',
 			pageTitle     : 'Keterangan',
 			rootComponent : 'Keterangan',
+			styleDependencies : [],
+		},
+		{
+			urlPath		  : '/student',
+			pageTitle     : 'Student',
+			rootComponent : 'Student',
 			styleDependencies : [],
 		},
 		{
